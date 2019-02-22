@@ -969,13 +969,15 @@ class TPOTBase(BaseEstimator):
             else:
                 raise ValueError('Failed creating the periodic_checkpoint_folder:\n{}'.format(e))
 
-    def export(self, output_file_name, skip_if_repeated=False):
+    def export(self, output_file_name, input_file_name=None, skip_if_repeated=False):
         """Export the optimized pipeline as Python code.
 
         Parameters
         ----------
         output_file_name: string
             String containing the path and file name of the desired output file
+        input_file_name: string
+            String containing the path and file name of the original input file
         skip_if_repeated: boolean
             If True, skip the actual writing if a pipeline
             code would be identical to the last pipeline exported
@@ -989,7 +991,12 @@ class TPOTBase(BaseEstimator):
         if self._optimized_pipeline is None:
             raise RuntimeError('A pipeline has not yet been optimized. Please call fit() first.')
 
-        to_write = export_pipeline(self._optimized_pipeline, self.operators, self._pset, self._imputed, self._optimized_pipeline_score, self.random_state)
+        to_write = export_pipeline(self._optimized_pipeline, 
+                                   self.operators, self._pset, 
+                                   self._imputed, 
+                                   self._optimized_pipeline_score, 
+                                   self.random_state,
+                                   self.input_file_name)
 
         # dont export a pipeline you just had
         if skip_if_repeated and (self._exported_pipeline_text == to_write):

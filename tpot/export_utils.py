@@ -51,7 +51,8 @@ def get_by_name(opname, operators):
     return ret_op_class
 
 
-def export_pipeline(exported_pipeline, operators, pset, impute=False, pipeline_score=None, random_state=None):
+def export_pipeline(exported_pipeline, operators, pset, impute=False, 
+                    pipeline_score=None, random_state=None, output_file_name=None):
     """Generate source code for a TPOT Pipeline.
 
     Parameters
@@ -89,6 +90,9 @@ features = tpot_data.drop('target', axis=1).values
 training_features, testing_features, training_target, testing_target = \\
             train_test_split(features, tpot_data['target'].values, random_state={})
 """.format(random_state)
+
+    if output_filename is not None:
+        pipeline_text = pipeline_text.replace('PATH/TO/DATA/FILE',output_filename)
 
     # Add the imputation step if it was used by TPOT
     if impute:
